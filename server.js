@@ -10,6 +10,7 @@ const optionDefinitions = [
 	{ name: 'delete', typeLabel: exampleUrl, description: "create a DELETE endpoint", alias: "d", type: String, multiple: true},
 	{ name: 'echo', description: "reply with request body", alias: "e", type: Boolean},
 	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent", alias: "b", type: String},
+	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
 	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
 	{ name: 'port', typeLabel: "{underline port number}", description: "port to listen to. Defaults to environment variable PORT, then 8080", alias: "P", type: Number},
 	{ name: 'help', description: "display this message", alias: "h", type: Boolean},
@@ -46,6 +47,17 @@ const app = express();
 
 const echo = args.echo;
 const response = args.response;
+const makeHeaders = (headerList) => {
+	const headers = {};
+	if (headerList) {
+		headerList.forEach((header) => {
+			const split = header.split(':');
+			headers[split[0]] = split[1];
+		});
+	}
+	return headers;
+}
+const headers = makeHeaders(args.header);
 const PORT = args.port || process.env.PORT || 8080;
 const status = args.status || 200;
 
@@ -60,8 +72,9 @@ methods.forEach((method) => {
 				console.log(`Params: ${JSON.stringify(req.params, null, 2)}`);
 				res.statusCode = status;
 				let data = "";
+				res.set(headers);
 				req.on("data", (chunk) => data += chunk);
-				req.on("end", () => { 
+				req.on("end", () => {
 					if (echo) {
 						res.write(data);
 					}
