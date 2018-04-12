@@ -1,14 +1,19 @@
 {
-  "name": "util-echo",
+  "name": "bounce-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "bin": {
+    "bounce": "./bin/bounce"
+  },
+  "author": "cfe84",
   "license": "ISC",
   "dependencies": {
+    "command-line-args": "^5.0.2",
+    "command-line-usage": "^5.0.4",
     "express": "^4.16.3"
   }
 }
