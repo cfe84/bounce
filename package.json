@@ -11,6 +11,10 @@
   },
   "author": "cfe84",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfe84/bounce.git"
+  },
   "dependencies": {
     "command-line-args": "^5.0.2",
     "command-line-usage": "^5.0.4",
