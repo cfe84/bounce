@@ -1,6 +1,7 @@
 const express = require("express");
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
+const fs = require("fs");
 
 const exampleUrl = "{underline /relative/url/:optional_parameter/}"
 const optionDefinitions = [
@@ -9,7 +10,8 @@ const optionDefinitions = [
     { name: 'post', typeLabel: exampleUrl, description: "create a POST endpoint", alias: "p", type: String, multiple: true},
 	{ name: 'delete', typeLabel: exampleUrl, description: "create a DELETE endpoint", alias: "d", type: String, multiple: true},
 	{ name: 'echo', description: "reply with request body", alias: "e", type: Boolean},
-	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent", alias: "b", type: String},
+	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent", alias: "r", type: String},
+	{ name: 'file', typeLabel: "{underline response file}", description: "use a file containing the response", alias: "f", type: String},
 	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
 	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
 	{ name: 'port', typeLabel: "{underline port number}", description: "port to listen to. Defaults to environment variable PORT, then 8080", alias: "P", type: Number},
@@ -47,6 +49,11 @@ const app = express();
 
 const echo = args.echo;
 const response = args.response;
+const fileName = args.file;
+let file = null;
+if (fileName) {
+	file = fs.readFileSync(fileName);
+}
 const makeHeaders = (headerList) => {
 	const headers = {};
 	if (headerList) {
@@ -67,6 +74,7 @@ methods.forEach((method) => {
 			console.log(`Create endpoint ${method.toUpperCase()} ${endpoint}`);
 			app[method](endpoint, (req, res) => {
 				console.log(`\n\n${method.toUpperCase()} ${endpoint}`);
+				console.log(`Received from ${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
 				console.log(`Params: ${JSON.stringify(req.params, null, 2)}`);
@@ -80,6 +88,9 @@ methods.forEach((method) => {
 					}
 					if (response) {
 						res.write(response);
+					}
+					if (file) {
+						res.write(file);
 					}
 					res.end();
 					console.log(`Body: ${data}`);

@@ -72,10 +72,13 @@ curl --header "thisis:a header" -X POST http://localhost:8080/api/users/ --data 
   -p, --post /relative/url/:optional_parameter/     create a POST endpoint
   -d, --delete /relative/url/:optional_parameter/   create a DELETE endpoint
   -e, --echo                                        reply with request body
-  -b, --response response body                      specify response to be sent
+  -r, --response response body                      specify response to be sent
+  -f, --file response file                          use a file containing the response
   -H, --header 'header: head'                       specify header to be replied. Can have multiple
   -s, --status http status                          specify status for response. Defaults to 200
   -P, --port port number                            port to listen to. Defaults to environment variable PORT, then
                                                     8080
-  -h, --help                                        display a help message
+  -h, --help                                        display this message
 ```
+
+At the moment responses are sent for any endpoint created.
