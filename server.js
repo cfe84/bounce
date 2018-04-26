@@ -74,7 +74,7 @@ methods.forEach((method) => {
 			console.log(`Create endpoint ${method.toUpperCase()} ${endpoint}`);
 			app[method](endpoint, (req, res) => {
 				console.log(`\n\n${method.toUpperCase()} ${endpoint}`);
-				console.log(`Received from ${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`);
+				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
 				console.log(`Params: ${JSON.stringify(req.params, null, 2)}`);
