@@ -72,5 +72,10 @@ describe("Command line parser", () => {
     it("should throw when multiple single parameters provided", () => {
         should(() => commandLineParser(["--port", "80", "--port", "81"])).throw("port expected only once");
         should(() => commandLineParser(["--get", "/", "-r", "80", "-r", "81"])).throw("response expected only once");
+    });
+    it("should not alter the input string", () => {
+        const input = ["--get", "/"];
+        commandLineParser(input);
+        should(input).have.length(2);
     })
 });

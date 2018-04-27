@@ -1,6 +1,6 @@
 const express = require("express");
-const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
+const CommandLineParser = require("./commandLineParser");
 const fs = require("fs");
 
 const exampleUrl = "{underline /relative/url/:optional_parameter/}";
@@ -22,6 +22,7 @@ const mainCommands = [
 	{ name: 'help', description: "display this message", alias: "h", type: Boolean},
 ];
 
+const commandLineParser = CommandLineParser(mainCommands);
 const optionDefinitions = mainCommands.concat(subcommands);
 
 const methods = [
@@ -31,8 +32,7 @@ const methods = [
 	"delete"
 ];
 
-const args = commandLineArgs(optionDefinitions, process.argv);
-if (process.argv.length === 2 || args.help) {
+const displayUsage = () => {
 	const usage = [
 		{ 
 			header: "Bounce", 
@@ -51,35 +51,48 @@ answer what you ask it to."},
 	return;
 }
 
+let args;
+try {
+	args = commandLineParser(process.argv.slice(2));
+}
+catch(error) {
+	console.error(error.message);
+	return displayUsage();
+}
+if (process.argv.length === 2 || !!args.help) {
+	displayUsage();
+}
+
 const app = express();
 
-const echo = args.echo;
-const response = args.response;
-const fileName = args.file;
-let file = null;
-if (fileName) {
-	file = fs.readFileSync(fileName);
-}
 const makeHeaders = (headerList) => {
 	const headers = {};
 	if (headerList) {
 		headerList.forEach((header) => {
-			const split = header.split(':');
+			const split = header.value.split(':');
 			headers[split[0]] = split[1];
 		});
 	}
 	return headers;
 }
-const headers = makeHeaders(args.header);
-const PORT = args.port || process.env.PORT || 8080;
-const status = args.status || 200;
-
+const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
+let endpointCount = 0;
 methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
-			console.log(`Create endpoint ${method.toUpperCase()} ${endpoint}`);
-			app[method](endpoint, (req, res) => {
-				console.log(`\n\n${method.toUpperCase()} ${endpoint}`);
+			endpointCount++;
+			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${endpoint.value}`);
+			const headers = makeHeaders(endpoint.header);
+			const status = endpoint.status ? endpoint.status.value : 200;
+			const echo = !!endpoint.echo;
+			const response = endpoint.response ? endpoint.response.value : null;
+			const fileName = endpoint.file ? endpoint.file.value : null;
+			let file = null;
+			if (fileName) {
+				file = fs.readFileSync(fileName);
+			}
+			app[method](endpoint.value, (req, res) => {
+				console.log(`\n\n#${endpointCount}: ${method.toUpperCase()} ${endpoint.value}`);
 				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
@@ -107,4 +120,6 @@ methods.forEach((method) => {
 	}
 });
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+if (endpointCount > 0) {
+	app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+}

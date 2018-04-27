@@ -76,10 +76,10 @@ const parser = (commands) => {
     }
 
     const parseCommandLine = (commandLine) => {
-        const commandLineCopy = commandLine.splice();
+        const commandLineCopy = commandLine.slice();
         const res = {};
-        while(commandLine.length > 0) {
-            parseCommand(commands, res, commandLine);    
+        while(commandLineCopy.length > 0) {
+            parseCommand(commands, res, commandLineCopy);    
         }
         return res;
     }
