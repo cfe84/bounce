@@ -1,9 +1,15 @@
 {
   "name": "bounce-server",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A code-less HTTP server setup in seconds",
   "main": "server.js",
-  "keywords": ["utils","development","stubb","proxy","spy"],
+  "keywords": [
+    "utils",
+    "development",
+    "stubb",
+    "proxy",
+    "spy"
+  ],
   "scripts": {
     "test": "mocha test/*.js"
   },
