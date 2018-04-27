@@ -1,3 +1,5 @@
+_A code-less HTTP server setup in seconds_
+
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole
 day, and it's already been 45 minutes of straight-up
@@ -7,9 +9,9 @@ tells you what it sees.
 
 Well, fear no more Dresdel, because I've got you covered.
 
-This is an HTTP server that you can entirely setup through a single command line,
-and which will let you create several endpoints that return whatever you want
-them to return. As a bonus, it will snitch on who's calling it and what it's telling
+This is an HTTP server that you can entirely start through a single command line,
+and which will let you create several endpoints that behave the way you want.
+As a bonus, it will snitch on who's calling it and what it's telling
 it.
 
 You can specify:
@@ -17,6 +19,14 @@ You can specify:
 - What the endpoints are going to return (a fixed body, a file's content, or echo what it receives)
 - Response status code
 - What headers they're going to return
+
+## Why would I use that?
+
+- Stub APIs not ready yet
+- Stub dependencies
+- Look at what your app is sending for debug
+- Test your app in erroneous replies cases
+- Test connectivity
 
 ## Install
 
