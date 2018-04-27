@@ -77,6 +77,7 @@ const makeHeaders = (headerList) => {
 }
 const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
 let endpointCount = 0;
+let requestCount = 0;
 methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
@@ -92,7 +93,8 @@ methods.forEach((method) => {
 				file = fs.readFileSync(fileName);
 			}
 			app[method](endpoint.value, (req, res) => {
-				console.log(`\n\n#${endpointCount}: ${method.toUpperCase()} ${endpoint.value}`);
+				requestCount++;
+				console.log(`\n\n#${requestCount}: ${method.toUpperCase()} ${endpoint.value} (#${endpointCount})`);
 				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
@@ -118,6 +120,11 @@ methods.forEach((method) => {
 			});			
 		})		
 	}
+	app[method]("*", (req, res) => {
+		console.warn(`#${requestCount++} ${method.toUpperCase()} ${req.path}: NOT FOUND`);
+		res.statusCode = 404;
+		res.end("Not found");
+	});
 });
 
 if (endpointCount > 0) {
