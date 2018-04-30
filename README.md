@@ -153,4 +153,7 @@ the behavior you want at the end of the command.
 
 Bounce can also be used with environment variable. This is useful if you want to deploy
 it on an Azure app service for test purposes, for example. In this case, define an environment
-variable called `BOUNCE_COMMAND` and set it to the command to run BOUNCE (e.g. `--get /`).
+variable called `BOUNCE_COMMAND` and set it to the command to run BOUNCE (e.g. `--get /`), then 
+start bounce without parameters (`bounce` or `node server.js`).
+
+When the `BOUNCE_COMMAND` variable is defined, bounce is ignoring the command line.
