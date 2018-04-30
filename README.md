@@ -88,6 +88,7 @@ curl --header "thisis:a header" -X POST http://localhost:8080/api/users/ --data 
 ## Parameters
 
 Available commands are the following: (check `bounce --help` to get the latest)
+
 ```
   -g, --get /relative/url/:optional_parameter/      create a GET endpoint
   -u, --put /relative/url/:optional_parameter/      create a PUT endpoint
@@ -99,12 +100,22 @@ Available commands are the following: (check `bounce --help` to get the latest)
 ```
 
 In addition, the following sub-commands can be used to configure endpoints:
+
 ```
   -e, --echo                                        reply with request body
   -r, --response response body                      specify response to be sent
   -f, --file response file                          use a file containing the response
   -H, --header 'header: head'                       specify header to be replied. Can have multiple
   -s, --status http status                          specify status for response. Defaults to 200
+  -x, --proxy-to https://www.google.com             Proxy request to another server. Response headers and status
+                                                    code are returned. The 'host' header will be replaced to match
+                                                    the destination server.
+  --proxy-path                                      Proxy request path to the proxied as 
+                                                    well. This is
+                                                    especially useful if you catch all request to the proxy. (e.g.
+                                                    --get '*' --proxy-to https://www.google.com --proxy-path). Path
+                                                    is appended to any path defined it the proxy-to sub-command,
+                                                    so don't use trailing slashes in the proxy path
 ```
 
 Sub-commands are applied only to the commands that is before them. For example:
