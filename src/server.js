@@ -94,7 +94,7 @@ methods.forEach((method) => {
 			}
 			app[method](endpoint.value, (req, res) => {
 				requestCount++;
-				console.log(`\n\n#${requestCount}: ${method.toUpperCase()} ${endpoint.value} (#${endpointCount})`);
+				console.log(`\n\n#${requestCount}: ${method.toUpperCase()} ${endpoint.value} (Endpoint #${endpointCount})`);
 				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
