@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "command-line-usage": "^5.0.4",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "shellwords": "^0.1.1"
   },
   "devDependencies": {
     "mocha": "^5.1.1",

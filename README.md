@@ -1,5 +1,10 @@
 _A code-less HTTP server setup in seconds_
 
+   ___  _  _ _  _  _  __  ___ 
+  | o )/ \| | || \| |/ _|| __|
+  | o ( o ) U || \\ ( (_ | _| 
+  |___/\_/|___||_|\_|\__||___|
+
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole
 day, and it's already been 45 minutes of straight-up
@@ -25,6 +30,7 @@ You can specify:
 - Stub APIs not ready yet
 - Stub dependencies
 - Look at what your app is sending for debug
+- As a proxy to spy on what is sent to a server you're integrating with
 - Test your app in erroneous replies cases
 - Test connectivity
 
@@ -142,3 +148,9 @@ and `ALL /`, that last endpoint will be matched only for `POST`, `PUT`, `DELETE`
 If no endpoint is matched, a 404 is returned, with body explicitly stating that Bounce didn't
 match anything. If you want to change that behavior, then specify a `--all '*'` endpoint with
 the behavior you want at the end of the command.
+
+## Using environment variable instead of command line
+
+Bounce can also be used with environment variable. This is useful if you want to deploy
+it on an Azure app service for test purposes, for example. In this case, define an environment
+variable called `BOUNCE_COMMAND` and set it to the command to run BOUNCE (e.g. `--get /`).

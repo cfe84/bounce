@@ -1,11 +1,7 @@
 const express = require("express");
-const commandLineUsage = require('command-line-usage');
-const CommandLineParser = require("./commandLineParser");
 const fs = require("fs");
 const proxy = require("./proxy");
-const commandDefinitions = require("./commandDefinitions");
-
-const commandLineParser = CommandLineParser(commandDefinitions.mainCommands);
+const parseCommandLine = require("./parseCommandLine");
 
 const methods = [
 	"get",
@@ -15,35 +11,9 @@ const methods = [
 	"all"
 ];
 
-const displayUsage = () => {
-	const usage = [
-		{ 
-			header: "Bounce", 
-			content: "This is a server that will listen to HTTP calls and \
-answer what you ask it to."},
-		{
-			header: "Example",
-			content: "bounce --get /api/users/:id/something --post /api/users/ --port 8080 --echo &"
-		},
-		{
-			header: "Options",
-			optionList: commandDefinitions.optionDefinitions
-		}
-	]
-	console.log(commandLineUsage(usage));
+const args = parseCommandLine();
+if (!args) {
 	return;
-}
-
-let args;
-try {
-	args = commandLineParser(process.argv.slice(2));
-}
-catch(error) {
-	console.error(error.message);
-	return displayUsage();
-}
-if (process.argv.length === 2 || !!args.help) {
-	displayUsage();
 }
 
 const app = express();
