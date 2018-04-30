@@ -94,6 +94,7 @@ Available commands are the following: (check `bounce --help` to get the latest)
   -u, --put /relative/url/:optional_parameter/      create a PUT endpoint
   -p, --post /relative/url/:optional_parameter/     create a POST endpoint
   -d, --delete /relative/url/:optional_parameter/   create a DELETE endpoint
+  -a, --all /relative/url/:optional_parameter/      create an endpoint matchin all methods
   -P, --port port number                            port to listen to. Defaults to environment variable PORT, then
                                                     8080
   -h, --help                                        display this message
@@ -129,3 +130,15 @@ This will:
 - When calling GET / -> Return 200 with content "Hello !"
 - When calling GET /admin -> Return 403 with content "Forbidden !"
 - When calling GET /package.json -> Return contents of the file `package.json` with content-type header set to `application/json`.
+
+## Matching order
+
+Within a method, matching happens in order of definition, which means that if you define 
+a `GET /` then a `GET *`, then `GET *` is not executed for `/`. 
+
+`ALL` endpoints are executed after specific endpoints, which means that if you define `GET /`
+and `ALL /`, that last endpoint will be matched only for `POST`, `PUT`, `DELETE`, etc.
+
+If no endpoint is matched, a 404 is returned, with body explicitly stating that Bounce didn't
+match anything. If you want to change that behavior, then specify a `--all '*'` endpoint with
+the behavior you want at the end of the command.

@@ -3,36 +3,16 @@ const commandLineUsage = require('command-line-usage');
 const CommandLineParser = require("./commandLineParser");
 const fs = require("fs");
 const proxy = require("./proxy");
+const commandDefinitions = require("./commandDefinitions");
 
-const exampleUrl = "{underline /relative/url/:optional_parameter/}";
-
-const subcommands = [
-    { name: 'echo', description: "reply with request body", alias: "e", type: Boolean},
-	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent", alias: "r", type: String},
-	{ name: 'file', typeLabel: "{underline response file}", description: "use a file containing the response", alias: "f", type: String},
-	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
-	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
-	{ name: 'proxy-to', typeLabel: "{underline https://www.google.com}", description: "Proxy request to another server. Response headers and status code are returned. The 'host' header will be replaced to match the destination server.", alias: "x", type: String},
-	{ name: 'proxy-path', description: "Proxy request path to the proxied server as well. This is especially useful if you catch all request to the proxy. (e.g. --get '*' --proxy-to https://www.google.com --proxy-path). Path is appended to any path defined it the proxy-to sub-command, so don't use trailing slashes in the proxy path", type: Boolean}
-];
-
-const mainCommands = [
-    { name: 'get', typeLabel: exampleUrl, description: "create a GET endpoint", alias: "g", type: String, multiple: true, subcommands},
-    { name: 'put', typeLabel: exampleUrl, description: "create a PUT endpoint", alias: "u", type: String, multiple: true, subcommands},
-    { name: 'post', typeLabel: exampleUrl, description: "create a POST endpoint", alias: "p", type: String, multiple: true, subcommands},
-	{ name: 'delete', typeLabel: exampleUrl, description: "create a DELETE endpoint", alias: "d", type: String, multiple: true, subcommands},
-	{ name: 'port', typeLabel: "{underline port number}", description: "port to listen to. Defaults to environment variable PORT, then 8080", alias: "P", type: Number},
-	{ name: 'help', description: "display this message", alias: "h", type: Boolean},
-];
-
-const commandLineParser = CommandLineParser(mainCommands);
-const optionDefinitions = mainCommands.concat(subcommands);
+const commandLineParser = CommandLineParser(commandDefinitions.mainCommands);
 
 const methods = [
 	"get",
 	"put",
 	"post",
-	"delete"
+	"delete",
+	"all"
 ];
 
 const displayUsage = () => {
@@ -47,7 +27,7 @@ answer what you ask it to."},
 		},
 		{
 			header: "Options",
-			optionList: optionDefinitions
+			optionList: commandDefinitions.optionDefinitions
 		}
 	]
 	console.log(commandLineUsage(usage));
@@ -78,6 +58,7 @@ const makeHeaders = (headerList) => {
 	}
 	return headers;
 }
+
 const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
 let endpointCount = 0;
 let requestCount = 0;
@@ -85,7 +66,8 @@ methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
 			endpointCount++;
-			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${endpoint.value}`);
+			const url = endpoint.value;
+			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
 			const headers = makeHeaders(endpoint.header);
 			const status = endpoint.status ? endpoint.status.value : 200;
 			const echo = !!endpoint.echo;
@@ -97,9 +79,9 @@ methods.forEach((method) => {
 			}
 			const proxyTo = endpoint["proxy-to"] ? endpoint["proxy-to"].value : null;
 			const proxyPath = !!endpoint["proxy-path"];
-			app[method](endpoint.value, (req, res) => {
+			app[method](url, (req, res) => {
 				requestCount++;
-				console.log(`\n\n#${requestCount}: ${method.toUpperCase()} ${endpoint.value} (Endpoint #${endpointCount})`);
+				console.log(`\n\n#${requestCount}: ${req.method.toUpperCase()} ${url} (Endpoint #${endpointCount})`);
 				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
@@ -127,14 +109,14 @@ methods.forEach((method) => {
 					console.log(`Body: ${data}`);
 					console.log(`\n\n------------------------------`);
 				});
-			});			
+			});
 		})		
 	}
-	app[method]("*", (req, res) => {
-		console.warn(`#${requestCount++} ${method.toUpperCase()} ${req.path}: NOT FOUND`);
-		res.statusCode = 404;
-		res.end("Not found");
-	});
+});
+app.all("*", (req, res) => {
+	console.warn(`#${requestCount++} ${req.method.toUpperCase()} ${req.path}: NOT FOUND`);
+	res.statusCode = 404;
+	res.end("Not found (Endpoint not matched in Bounce)");
 });
 
 if (endpointCount > 0) {
