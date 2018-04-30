@@ -9,6 +9,7 @@ const subcommands = [
 const mainCommands = [
     { name: 'get', alias: "g", type: String, multiple: true, subcommands},
 	{ name: 'port', alias: "P", type: Number},
+	{ name: 'pizza', description: "Not having an alias shouldn't be an issue.", type: Number},
 	{ name: 'help', alias: "h", type: Boolean},
 ];
 

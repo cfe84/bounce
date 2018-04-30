@@ -2,6 +2,7 @@ const express = require("express");
 const commandLineUsage = require('command-line-usage');
 const CommandLineParser = require("./commandLineParser");
 const fs = require("fs");
+const proxy = require("./proxy");
 
 const exampleUrl = "{underline /relative/url/:optional_parameter/}";
 
@@ -11,6 +12,8 @@ const subcommands = [
 	{ name: 'file', typeLabel: "{underline response file}", description: "use a file containing the response", alias: "f", type: String},
 	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
 	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
+	{ name: 'proxy-to', typeLabel: "{underline https://www.google.com}", description: "Proxy request to another server. Response headers and status code are returned. The 'host' header will be replaced to match the destination server.", alias: "x", type: String},
+	{ name: 'proxy-path', description: "Proxy request path to the proxied server as well. This is especially useful if you catch all request to the proxy. (e.g. --get '*' --proxy-to https://www.google.com --proxy-path). Path is appended to any path defined it the proxy-to sub-command, so don't use trailing slashes in the proxy path", type: Boolean}
 ];
 
 const mainCommands = [
@@ -92,6 +95,8 @@ methods.forEach((method) => {
 			if (fileName) {
 				file = fs.readFileSync(fileName);
 			}
+			const proxyTo = endpoint["proxy-to"] ? endpoint["proxy-to"].value : null;
+			const proxyPath = !!endpoint["proxy-path"];
 			app[method](endpoint.value, (req, res) => {
 				requestCount++;
 				console.log(`\n\n#${requestCount}: ${method.toUpperCase()} ${endpoint.value} (Endpoint #${endpointCount})`);
@@ -113,7 +118,12 @@ methods.forEach((method) => {
 					if (file) {
 						res.write(file);
 					}
-					res.end();
+					if (proxyTo) {
+						proxy(proxyTo, req, data, res, proxyPath);
+					}
+					if (!proxyTo) {
+						res.end();
+					}
 					console.log(`Body: ${data}`);
 					console.log(`\n\n------------------------------`);
 				});
