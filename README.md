@@ -1,9 +1,12 @@
 _A code-less HTTP server setup in seconds_
 
+```
    ___  _  _ _  _  _  __  ___ 
   | o )/ \| | || \| |/ _|| __|
   | o ( o ) U || \\ ( (_ | _| 
   |___/\_/|___||_|\_|\__||___|
+
+```
 
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole
@@ -123,6 +126,10 @@ In addition, the following sub-commands can be used to configure endpoints:
                                                     --get '*' --proxy-to https://www.google.com --proxy-path). Path
                                                     is appended to any path defined it the proxy-to sub-command,
                                                     so don't use trailing slashes in the proxy path
+  --proxy-certfile filepath                         Client certificate to authenticate requests to proxy
+  --proxy-keyfile filepath                          Secret client key to authenticate requests
+  --proxy-cert certificate content                  Client certificate to authenticate requests to proxy
+  --proxy-key keyfile content                       Secret client key to authenticate requests                                                    
 ```
 
 Sub-commands are applied only to the commands that is before them. For example:

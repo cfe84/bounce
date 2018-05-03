@@ -1,6 +1,13 @@
 const url = require("url");
+const fs = require("fs");
+const proxy = (params, req, data, res) => {
+    let proxyUrl = params.proxyTo;
+    let proxyPath = params.proxyPath;
+    let certFile = params.certFile;
+    let keyFile = params.keyFile;
+    const cert = params.cert || (certFile ? fs.readFileSync(certFile) : null);
+    const key = params.key || (keyFile ? fs.readFileSync(keyFile) : null);
 
-const proxy = (proxyUrl, req, data, res, proxyPath) => {
     let proxyTo = url.parse(proxyUrl);
     if (!proxyTo.protocol) {
         proxyUrl = `http://${proxyUrl}`;
@@ -20,7 +27,9 @@ const proxy = (proxyUrl, req, data, res, proxyPath) => {
         hostname: proxyTo.hostname,
         path,
         method: req.method,
-        headers: req.headers
+        headers: req.headers,
+        key,
+        cert
     }, (resp) => {
         res.statusCode = resp.statusCode;
         res.set(resp.headers);

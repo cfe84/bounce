@@ -7,7 +7,11 @@ const subcommands = [
 	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
 	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
 	{ name: 'proxy-to', typeLabel: "{underline https://www.google.com}", description: "Proxy request to another server. Response headers and status code are returned. The 'host' header will be replaced to match the destination server.", alias: "x", type: String},
-	{ name: 'proxy-path', description: "Proxy request path to the proxied server as well. This is especially useful if you catch all request to the proxy. (e.g. --get '*' --proxy-to https://www.google.com --proxy-path). Path is appended to any path defined it the proxy-to sub-command, so don't use trailing slashes in the proxy path", type: Boolean}
+    { name: 'proxy-path', description: "Proxy request path to the proxied server as well. This is especially useful if you catch all request to the proxy. (e.g. --get '*' --proxy-to https://www.google.com --proxy-path). Path is appended to any path defined it the proxy-to sub-command, so don't use trailing slashes in the proxy path", type: Boolean},
+    { name: 'proxy-certfile', typeLabel: "{underline filepath}", description: "Client certificate to authenticate requests to proxy", type: String},
+    { name: 'proxy-keyfile', typeLabel: "{underline filepath}", description: "Secret client key to authenticate requests", type: String},
+    { name: 'proxy-cert', typeLabel: "{underline certificate content}", description: "Client certificate to authenticate requests to proxy", type: String},
+    { name: 'proxy-key', typeLabel: "{underline keyfile content}", description: "Secret client key to authenticate requests", type: String},
 ];
 
 const mainCommands = [

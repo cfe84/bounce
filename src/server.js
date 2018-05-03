@@ -29,6 +29,8 @@ const makeHeaders = (headerList) => {
 	return headers;
 }
 
+getValueIfDefined = (endpoint, key) => endpoint[key] ? endpoint[key].value : null
+
 const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
 let endpointCount = 0;
 let requestCount = 0;
@@ -49,6 +51,11 @@ methods.forEach((method) => {
 			}
 			const proxyTo = endpoint["proxy-to"] ? endpoint["proxy-to"].value : null;
 			const proxyPath = !!endpoint["proxy-path"];
+			const proxyKeyfile = endpoint["proxy-keyfile"] ? endpoint["proxy-keyfile"].value : null;
+			const proxyCertfile = endpoint["proxy-certfile"] ? endpoint["proxy-certfile"].value : null;
+			const proxyKey = getValueIfDefined(endpoint, "proxy-key");
+			const proxyCert = getValueIfDefined(endpoint, "proxy-cert");;
+			
 			app[method](url, (req, res) => {
 				requestCount++;
 				console.log(`\n\n#${requestCount}: ${req.method.toUpperCase()} ${url} (Endpoint #${endpointCount})`);
@@ -71,7 +78,18 @@ methods.forEach((method) => {
 						res.write(file);
 					}
 					if (proxyTo) {
-						proxy(proxyTo, req, data, res, proxyPath);
+						proxy(
+							{
+								proxyTo, 
+								proxyPath, 
+								certFile: proxyCertfile, 
+								keyFile: proxyKeyfile,
+								cert: proxyCert,
+								key: proxyKey
+							}, 
+							req,
+							data,
+							res);
 					}
 					if (!proxyTo) {
 						res.end();
