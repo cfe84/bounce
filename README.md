@@ -1,4 +1,4 @@
-_A code-less HTTP server setup in seconds_
+_A code-less, multi-dev-hack-purpose HTTP server, setup in seconds_
 
 ```
    ___  _  _ _  _  _  __  ___ 

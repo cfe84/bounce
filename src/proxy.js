@@ -31,10 +31,19 @@ const proxy = (params, req, data, res) => {
         key,
         cert
     }, (resp) => {
+        let data = "";
+        console.log(`Response Status Code: ${resp.statusCode}`);
+        console.log(`    Response Headers: ${JSON.stringify(req.headers, null, 2)}`);
         res.statusCode = resp.statusCode;
         res.set(resp.headers);
-        resp.on("data", (chunk) => res.write(chunk));
-        resp.on("end", () => res.end());
+        resp.on("data", (chunk) => {
+            data += chunk
+            res.write(chunk);
+        });
+        resp.on("end", () => {
+            console.log(`   Response Body: ${data}`);
+            res.end();
+        });
     });
     passThru.write(data);
     passThru.end();
