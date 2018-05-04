@@ -58,7 +58,7 @@ methods.forEach((method) => {
 			
 			app[method](url, (req, res) => {
 				requestCount++;
-				console.log(`\n\n#${requestCount}: ${req.method.toUpperCase()} ${url} (Endpoint #${endpointCount})`);
+				console.log(`\n\n#${requestCount} - ${new Date()}: ${req.method.toUpperCase()} ${url} (Endpoint #${endpointCount})`);
 				console.log(`Received from ${req.connection.remoteAddress}`);
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
