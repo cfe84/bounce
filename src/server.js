@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const proxy = require("./proxy");
 const parseCommandLine = require("./parseCommandLine");
+const https = require("https");
 
 const methods = [
 	"get",
@@ -31,6 +32,7 @@ const makeHeaders = (headerList) => {
 
 getValueIfDefined = (endpoint, key) => endpoint[key] ? endpoint[key].value : null
 
+const HTTPS = !!args.https;
 const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
 let endpointCount = 0;
 let requestCount = 0;
@@ -63,6 +65,10 @@ methods.forEach((method) => {
 				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
 				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
 				console.log(`Params: ${JSON.stringify(req.params, null, 2)}`);
+				const cert = req.secure && req.socket.getPeerCertificate();
+				if (req.secure && cert.subject) {
+					console.log(`Client certificate: ${cert.subject.CN}`);
+				}
 				res.statusCode = status;
 				let data = "";
 				res.set(headers);
@@ -101,6 +107,7 @@ methods.forEach((method) => {
 		})		
 	}
 });
+
 app.all("*", (req, res) => {
 	console.warn(`#${requestCount++} ${req.method.toUpperCase()} ${req.path}: NOT FOUND`);
 	res.statusCode = 404;
@@ -108,5 +115,16 @@ app.all("*", (req, res) => {
 });
 
 if (endpointCount > 0) {
-	app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+	if (HTTPS) {
+		const httpsCertificateFile = getValueIfDefined(args, "https-certfile");
+		const keyCertificateFile = getValueIfDefined(args, "https-keyfile");
+		const httpsCertificate = getValueIfDefined(args, "https-cert") || fs.readFileSync(httpsCertificateFile);
+		const keyCertificate =  getValueIfDefined(args, "https-key") ||fs.readFileSync(keyCertificateFile);
+		https.createServer({
+			key: keyCertificate,
+			cert: httpsCertificate
+		}, app).listen(PORT, () => console.log(`Listening on port ${PORT} with https`));
+	} else {
+		app.listen(PORT, () => console.log(`Listening on port ${PORT} with http`));
+	}
 }

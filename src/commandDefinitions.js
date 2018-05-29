@@ -22,6 +22,11 @@ const mainCommands = [
     { name: 'all', typeLabel: exampleUrl, description: "create an endpoint matchin all methods", alias: "a", type: String, multiple: true, subcommands},
 	{ name: 'port', typeLabel: "{underline port number}", description: "port to listen to. Defaults to environment variable PORT, then 8080", alias: "P", type: Number},
 	{ name: 'help', description: "display this message", alias: "h", type: Boolean},
+    { name: 'https', description: "setup the server as https", alias: "S", type: Boolean},
+    { name: 'https-certfile', typeLabel: "{underline filepath}", description: "Client certificate for https endpoint", type: String},
+    { name: 'https-keyfile', typeLabel: "{underline filepath}", description: "Secret client key for https endpoint", type: String},
+    { name: 'https-cert', typeLabel: "{underline certificate content}", description: "Client certificate for https endpoint", type: String},
+    { name: 'https-key', typeLabel: "{underline key contnet}", description: "Secret client key for https endpoint", type: String},    
 ];
 
 const optionDefinitions = mainCommands.concat(subcommands);
