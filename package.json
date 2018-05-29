@@ -1,6 +1,6 @@
 {
   "name": "bounce-server",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "A code-less HTTP server setup in seconds",
   "main": "server.js",
   "keywords": [
