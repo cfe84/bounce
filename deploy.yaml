@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: bounce
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: bounce
+    spec:
+      containers:
+      - name: bounce-container
+        image: cfe84/bounce:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BOUNCE_COMMAND
+          valueFrom:
+            secretKeyRef:
+              name: bounce-command
+              key: bounce-command
+        - name: PORT
+          value: "8080"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: bounce-service
+spec:
+  selector:
+    app: bounce
+  ports:
+  - protocol: TCP
+    port: 8080
+  type: LoadBalancer

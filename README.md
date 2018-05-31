@@ -1,4 +1,5 @@
-_A code-less, multi-dev-hack-purpose HTTP server, setup in seconds_
+_A code-less, multi-dev-hack-purpose HTTP server, setup in seconds, running
+in CLI, Node, Docker or Kubernetes out of the box_
 
 ```
    ___  _  _ _  _  _  __  ___ 
@@ -37,13 +38,13 @@ You can specify:
 - Test your app in erroneous replies cases
 - Test connectivity
 
-## Install
+## How do I run it?
+
+### Using CLI
 
 ```
 npm install -g bounce-server
 ```
-
-## Use
 
 This example creates two endpoints, a GET which does nothing, and a POST which responds
 with what it receives.
@@ -93,6 +94,29 @@ curl --header "thisis:a header" -X POST http://localhost:8080/api/users/ --data 
 # ------------------------------
 # this is the body ### <- this is curl's output
 ```
+
+### Deployed on a server
+
+- Create a free [Azure WebApp](https://azure.microsoft.com/en-us/services/app-service/web/)
+- Fork the GitHub repo on your GitHub account
+- Add an environment variable / app config key called `BOUNCE_COMMAND` and set it to what you want
+- In the Deployment options, deploy from GitHub and choose your fork
+
+### Using a Docker Container
+
+Pull container from DockerHub: cfe84/bounce
+
+```
+docker run --env BOUNCE_COMMAND="-g / -r Hurray" cfe84/bounce
+```
+
+Put whatever you want in the `BOUNCE_COMMAND`
+
+### Using Kubernetes
+
+- Export a secret called `bounce-command` with a key called `bounce-command` and containing the
+command you want to run: `kubectl create secret generic bounce-command --from-literal=bounce-command="-g / -r YO"`
+- `kubectl apply -f deploy.yaml` asks for a Load Balancer and exposes bounce on port 8080.
 
 ## Parameters
 
