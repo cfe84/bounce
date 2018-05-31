@@ -140,6 +140,8 @@ In addition, the following sub-commands can be used to configure endpoints:
 
 ```
   -e, --echo                                        reply with request body
+  -G, --guid                                        when the node application is starting, a GUID is generated.
+                                                    This replies with this GUID. Particularly useful to test load balancing and server stickiness
   -r, --response response body                      specify response to be sent
   -f, --file response file                          use a file containing the response
   -H, --header 'header: head'                       specify header to be replied. Can have multiple

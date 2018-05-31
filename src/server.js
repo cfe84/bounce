@@ -3,6 +3,7 @@ const fs = require("fs");
 const proxy = require("./proxy");
 const parseCommandLine = require("./parseCommandLine");
 const https = require("https");
+const uuid = require('uuid/v1');
 
 const methods = [
 	"get",
@@ -34,6 +35,7 @@ getValueIfDefined = (endpoint, key) => endpoint[key] ? endpoint[key].value : nul
 
 const HTTPS = !!args.https;
 const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
+const GUID = uuid();
 let endpointCount = 0;
 let requestCount = 0;
 methods.forEach((method) => {
@@ -45,6 +47,7 @@ methods.forEach((method) => {
 			const headers = makeHeaders(endpoint.header);
 			const status = endpoint.status ? endpoint.status.value : 200;
 			const echo = !!endpoint.echo;
+			const guid = !!endpoint.guid;
 			const response = endpoint.response ? endpoint.response.value : null;
 			const fileName = endpoint.file ? endpoint.file.value : null;
 			let file = null;
@@ -82,6 +85,9 @@ methods.forEach((method) => {
 					}
 					if (file) {
 						res.write(file);
+					}
+					if (guid) {
+						res.write(GUID);
 					}
 					if (proxyTo) {
 						proxy(
