@@ -49,6 +49,8 @@ npm install -g bounce-server
 ```
 2. Run using command `bounce`
 
+![](https://chfeval.blob.core.windows.net/share/picture/bounce.gif?st=2018-05-31T23%3A15%3A43Z&se=2024-06-01T23%3A15%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=4dLyKApD2pr2tjOqMU1by77WjoL3p7jb2w%2FdFFgaxro%3D)
+
 This example creates two endpoints, a GET which does nothing, and a POST which responds
 with what it receives.
 
