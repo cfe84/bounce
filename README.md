@@ -33,6 +33,7 @@ You can specify:
 
 - Stub APIs not ready yet
 - Stub dependencies
+- Have a simple server you can use to play with cool tech (e.g. Kubernetes)
 - Look at what your app is sending for debug
 - As a proxy to spy on what is sent to a server you're integrating with
 - Test your app in erroneous replies cases
@@ -42,9 +43,11 @@ You can specify:
 
 ### Using CLI
 
+1. Install from npm 
 ```
 npm install -g bounce-server
 ```
+2. Run using command `bounce`
 
 This example creates two endpoints, a GET which does nothing, and a POST which responds
 with what it receives.
@@ -97,14 +100,14 @@ curl --header "thisis:a header" -X POST http://localhost:8080/api/users/ --data 
 
 ### Deployed on a server
 
-- Create a free [Azure WebApp](https://azure.microsoft.com/en-us/services/app-service/web/)
-- Fork the GitHub repo on your GitHub account
-- Add an environment variable / app config key called `BOUNCE_COMMAND` and set it to what you want
-- In the Deployment options, deploy from GitHub and choose your fork
+1. Create a free [Azure WebApp](https://azure.microsoft.com/en-us/services/app-service/web/)
+2. Fork the GitHub repo on your GitHub account
+3. Add an environment variable / app config key called `BOUNCE_COMMAND` and set it to what you want
+4. In the Deployment options, deploy from GitHub and choose your fork
 
 ### Using a Docker Container
 
-Pull container from DockerHub: cfe84/bounce
+1. Run container from DockerHub: cfe84/bounce
 
 ```
 docker run --env BOUNCE_COMMAND="-g / -r Hurray" cfe84/bounce
@@ -114,9 +117,9 @@ Put whatever you want in the `BOUNCE_COMMAND`
 
 ### Using Kubernetes
 
-- Export a secret called `bounce-command` with a key called `bounce-command` and containing the
+1. Export a secret called `bounce-command` with a key called `bounce-command` and containing the
 command you want to run: `kubectl create secret generic bounce-command --from-literal=bounce-command="-g / -r YO"`
-- `kubectl apply -f deploy.yaml` asks for a Load Balancer and exposes bounce on port 8080.
+2. `kubectl apply -f deploy.yaml` asks for a Load Balancer and exposes bounce on port 8080.
 
 ## Parameters
 
