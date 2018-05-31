@@ -16,8 +16,11 @@ const proxy = (params, req, data, res) => {
     const protocol = proxyTo.protocol.slice(0, -1);
     const http = require(protocol);
     const port = proxyTo.port || (protocol === "http" ? 80 : 443);
-    const path = proxyPath ? `${proxyTo.path}${req.url}` : proxyTo.path;
-    
+    const path = proxyPath 
+        ? proxyTo.path !== "/" ?
+            `${proxyTo.path}${req.url}`
+            : req.url
+        : proxyTo.path;
     console.log(`Proxying to ${req.method} ${protocol}://${proxyTo.hostname}:${port}${path}`);
 
     req.headers.host = `${proxyTo.hostname}:${port}`
