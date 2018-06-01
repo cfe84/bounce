@@ -49,6 +49,10 @@ const proxy = (params, req, data, res) => {
         });
     });
     passThru.write(data);
+    passThru.on("error", (err) => {
+        console.error(`Error while proxying: ${err}`);
+        res.end(`Bounce error - proxy failed: ${err}`);
+    });
     passThru.end();
 }
 
