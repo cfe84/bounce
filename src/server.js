@@ -4,6 +4,7 @@ const proxy = require("./proxy");
 const parseCommandLine = require("./parseCommandLine");
 const https = require("https");
 const uuid = require('uuid/v1');
+const hogCpu = require("./cpuHogger");
 
 const methods = [
 	"get",
@@ -46,6 +47,7 @@ methods.forEach((method) => {
 			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
 			const headers = makeHeaders(endpoint.header);
 			const status = endpoint.status ? endpoint.status.value : 200;
+			const cpuHogTime = endpoint.cpu ? endpoint.cpu.value : null;
 			const echo = !!endpoint.echo;
 			const guid = !!endpoint.guid;
 			const response = endpoint.response ? endpoint.response.value : null;
@@ -77,6 +79,9 @@ methods.forEach((method) => {
 				res.set(headers);
 				req.on("data", (chunk) => data += chunk);
 				req.on("end", () => {
+					if (cpuHogTime) {
+						hogCpu(cpuHogTime);
+					}
 					if (echo) {
 						res.write(data);
 					}
