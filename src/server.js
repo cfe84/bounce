@@ -1,10 +1,19 @@
 const express = require("express");
-const fs = require("fs");
-const proxy = require("./proxy");
 const parseCommandLine = require("./parseCommandLine");
 const https = require("https");
 const uuid = require('uuid/v1');
-const hogCpu = require("./cpuHogger");
+
+const createCpuHogCommand = require("./commands/createCpuHogCommand");
+const createEchoCommand = require("./commands/createEchoCommand");
+const createResponseCommand = require("./commands/createResponseCommand");
+const createFileResponseCommand = require("./commands/createFileResponseCommand");
+const createSetStatusCodeCommand = require("./commands/createSetStatusCodeCommand");
+const createSetHeadersCommand = require("./commands/createSetHeadersCommand");
+const createGuidCommand = require("./commands/createGuidCommand");
+const createProxyCommand = require("./commands/createProxyCommand");
+
+const createRequestReceivedOutput = require("./consoleOutput/createRequestReceivedOutput");
+const createDataReceivedOutput = require("./consoleOutput/createDataReceivedOutput");
 
 const methods = [
 	"get",
@@ -21,17 +30,6 @@ if (!args) {
 
 const app = express();
 
-const makeHeaders = (headerList) => {
-	const headers = {};
-	if (headerList) {
-		headerList.forEach((header) => {
-			const split = header.value.split(':');
-			headers[split[0]] = split[1];
-		});
-	}
-	return headers;
-}
-
 getValueIfDefined = (endpoint, key) => endpoint[key] ? endpoint[key].value : null
 
 const HTTPS = !!args.https;
@@ -42,77 +40,57 @@ let requestCount = 0;
 methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
-			endpointCount++;
 			const url = endpoint.value;
+			endpointCount++;
+			endpoint.endpointCount = endpointCount;
 			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
-			const headers = makeHeaders(endpoint.header);
-			const status = endpoint.status ? endpoint.status.value : 200;
-			const cpuHogTime = endpoint.cpu ? endpoint.cpu.value : null;
-			const echo = !!endpoint.echo;
-			const guid = !!endpoint.guid;
-			const response = endpoint.response ? endpoint.response.value : null;
-			const fileName = endpoint.file ? endpoint.file.value : null;
-			let file = null;
-			if (fileName) {
-				file = fs.readFileSync(fileName);
-			}
-			const proxyTo = endpoint["proxy-to"] ? endpoint["proxy-to"].value : null;
-			const proxyPath = !!endpoint["proxy-path"];
-			const proxyKeyfile = endpoint["proxy-keyfile"] ? endpoint["proxy-keyfile"].value : null;
-			const proxyCertfile = endpoint["proxy-certfile"] ? endpoint["proxy-certfile"].value : null;
-			const proxyKey = getValueIfDefined(endpoint, "proxy-key");
-			const proxyCert = getValueIfDefined(endpoint, "proxy-cert");;
+
+			const cpuHogCommand = createCpuHogCommand(endpoint);
+			const setStatusCodeCommand = createSetStatusCodeCommand(endpoint);
+			const setHeadersCommand = createSetHeadersCommand(endpoint);
+			const echoCommand = createEchoCommand(endpoint);
+			const responseCommand = createResponseCommand(endpoint);
+			const fileResponseCommand = createFileResponseCommand(endpoint);
+			const guidCommand = createGuidCommand(endpoint);
+			const proxyCommand = createProxyCommand(endpoint);
 			
+			const requestReceivedOutput = createRequestReceivedOutput(endpoint);
+			const dataReceivedOutput = createDataReceivedOutput(endpoint);
+
 			app[method](url, (req, res) => {
 				requestCount++;
-				console.log(`\n\n#${requestCount} - ${new Date()}: ${req.method.toUpperCase()} ${url} (Endpoint #${endpointCount})`);
-				console.log(`Received from ${req.connection.remoteAddress}`);
-				console.log(`Headers: ${JSON.stringify(req.headers, null, 2)}`);
-				console.log(`Query: ${JSON.stringify(req.query, null, 2)}`);
-				console.log(`Params: ${JSON.stringify(req.params, null, 2)}`);
-				const cert = req.secure && req.socket.getPeerCertificate();
-				if (req.secure && cert.subject) {
-					console.log(`Client certificate: ${cert.subject.CN}`);
-				}
-				res.statusCode = status;
+				const request = {
+					requestCount,
+					method: req.method,
+					remoteAddress: req.connection.remoteAddress,
+					headers: req.headers,
+					query: req.query,
+					url: req.url,
+					params: req.params,
+					cert: req.secure && req.socket.getPeerCertificate(),
+					serverGuid: GUID
+				};
+
+				requestReceivedOutput(request, res);
+
 				let data = "";
-				res.set(headers);
+
 				req.on("data", (chunk) => data += chunk);
 				req.on("end", () => {
-					if (cpuHogTime) {
-						hogCpu(cpuHogTime);
-					}
-					if (echo) {
-						res.write(data);
-					}
-					if (response) {
-						res.write(response);
-					}
-					if (file) {
-						res.write(file);
-					}
-					if (guid) {
-						res.write(GUID);
-					}
-					if (proxyTo) {
-						proxy(
-							{
-								proxyTo, 
-								proxyPath, 
-								certFile: proxyCertfile, 
-								keyFile: proxyKeyfile,
-								cert: proxyCert,
-								key: proxyKey
-							}, 
-							req,
-							data,
-							res);
-					}
-					if (!proxyTo) {
+					request.data = data;
+					dataReceivedOutput(request, res);
+					cpuHogCommand(request, res)
+					.then(() => setStatusCodeCommand(request, res))
+					.then(() => setHeadersCommand(request, res))
+					.then(() => echoCommand(request, res))
+					.then(() => responseCommand(request, res))
+					.then(() => fileResponseCommand(request, res))
+					.then(() => guidCommand(request, res))
+					.then(() => proxyCommand(request, res))
+					.then(() => {
 						res.end();
-					}
-					console.log(`Body: ${data}`);
-					console.log(`\n\n------------------------------`);
+					})
+					
 				});
 			});
 		})		
