@@ -9,7 +9,7 @@ in CLI, Node, Docker or Kubernetes out of the box_
 
 ```
 
-![](https://chfeval.blob.core.windows.net/share/picture/bounce.gif?st=2018-06-08T20%3A45%3A04Z&se=2023-06-09T20%3A45%3A00Z&sp=r&sv=2017-07-29&sr=b&sig=zCEVMnLSoIWrfmAJrcDq1Iik%2FFtMzJztTqsApCz3xZk%3D)
+![](https://chfeval.blob.core.windows.net/share/picture/bounce-example.gif?st=2018-06-08T21%3A38%3A19Z&se=2021-06-09T21%3A38%3A00Z&sp=rl&sv=2017-07-29&sr=b&sig=9h%2B3xjZn4w1rNJRIUstxhup4yZl%2FnBBeh8Db64mExVo%3D)
 
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole
