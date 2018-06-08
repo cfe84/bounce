@@ -1,4 +1,4 @@
-_A code-less, multi-dev-hack-purpose HTTP server, setup in seconds, running
+_A code-less, dev/hack multi purpose HTTP server, setup in seconds, running
 in CLI, Node, Docker or Kubernetes out of the box_
 
 ```
@@ -8,6 +8,8 @@ in CLI, Node, Docker or Kubernetes out of the box_
   |___/\_/|___||_|\_|\__||___|
 
 ```
+
+![](https://chfeval.blob.core.windows.net/share/picture/bounce.gif?st=2018-06-08T20%3A45%3A04Z&se=2023-06-09T20%3A45%3A00Z&sp=r&sv=2017-07-29&sr=b&sig=zCEVMnLSoIWrfmAJrcDq1Iik%2FFtMzJztTqsApCz3xZk%3D)
 
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole

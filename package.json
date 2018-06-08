@@ -6,7 +6,10 @@
   "keywords": [
     "utils",
     "development",
-    "stubb",
+    "test",
+    "stub",
+    "mock",
+    "server",
     "proxy",
     "spy"
   ],
