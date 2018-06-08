@@ -152,7 +152,9 @@ In addition, the following sub-commands can be used to configure endpoints:
   -i, --info                                        reply with information about the call (headers, query, ...)
   -G, --guid                                        when the node application is starting, a GUID is generated. This replies with
                                                     this GUID. Particularly useful to test load balancing and server stickiness
-  -r, --response response body                      specify response to be sent
+  -r, --response response body                      specify response to be sent. Supports templating from url (e.g. if url is
+                                                    /users/:id/ and response is 'User {id} not known', when calling /users/123/,
+                                                    response will be User 123 not known)
   -f, --file response file                          use a file containing the response
   -H, --header 'header: head'                       specify header to be replied. Can have multiple
   -s, --status http status                          specify status for response. Defaults to 200

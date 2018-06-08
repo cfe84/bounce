@@ -4,7 +4,7 @@ const subcommands = [
     { name: 'echo', description: "reply with request body", alias: "e", type: Boolean},
     { name: 'info', description: "reply with information about the call (headers, query, ...)", alias: "i", type: Boolean},
     { name: 'guid', description: "when the node application is starting, a GUID is generated. This replies with this GUID. Particularly useful to test load balancing and server stickiness", alias: "G", type: Boolean},
-	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent", alias: "r", type: String},
+	{ name: 'response', typeLabel: "{underline response body}", description: "specify response to be sent. Supports templating from url (e.g. if url is /users/:id/ and response is 'User \\{id\\} not known', when calling /users/123/, response will be User 123 not known)", alias: "r", type: String},
 	{ name: 'file', typeLabel: "{underline response file}", description: "use a file containing the response", alias: "f", type: String},
 	{ name: 'header', typeLabel: "{underline 'header: head'}", description: "specify header to be replied. Can have multiple", alias: "H", type: String, multiple: true},
 	{ name: 'status', typeLabel: "{underline http status}", description: "specify status for response. Defaults to 200", alias: "s", type: Number},
