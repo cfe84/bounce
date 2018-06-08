@@ -11,7 +11,9 @@
     "spy"
   ],
   "scripts": {
-    "test": "mocha test/*.js"
+    "test": "mocha test/*.js",
+    "publish-docker": "docker build . -t cfe84/bounce && docker push cfe84/bounce",
+    "publish-all": "npm publish && npm publish-docker"
   },
   "bin": {
     "bounce": "./bin/bounce"
