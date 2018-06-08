@@ -1,6 +1,6 @@
 const proxy = require("./proxy");
 
-const createProxyCommand = (endpoint) => {
+const createProxyCommand = (endpoint, container) => {
     const proxyTo = endpoint["proxy-to"] ? endpoint["proxy-to"].value : null;
     const proxyPath = !!endpoint["proxy-path"];
     const proxyKeyfile = endpoint["proxy-keyfile"] ? endpoint["proxy-keyfile"].value : null;
@@ -15,7 +15,8 @@ const createProxyCommand = (endpoint) => {
                 certFile: proxyCertfile, 
                 keyFile: proxyKeyfile,
                 cert: proxyCert,
-                key: proxyKey
+                key: proxyKey,
+                container
             }, 
             request,
             response)

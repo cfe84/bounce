@@ -3,9 +3,13 @@ const parseCommandLine = require("./parseCommandLine");
 const https = require("https");
 const uuid = require('uuid/v1');
 
+const quietLogger = require("./logger/quietLogger");
+const consoleLogger = require("./logger/consoleLogger");
+
 const createCpuHogCommand = require("./commands/createCpuHogCommand");
 const createEchoCommand = require("./commands/createEchoCommand");
 const createResponseCommand = require("./commands/createResponseCommand");
+const createInfoResponseCommand = require("./commands/createInfoResponseCommand");
 const createFileResponseCommand = require("./commands/createFileResponseCommand");
 const createSetStatusCodeCommand = require("./commands/createSetStatusCodeCommand");
 const createSetHeadersCommand = require("./commands/createSetHeadersCommand");
@@ -28,6 +32,11 @@ if (!args) {
 	return;
 }
 
+const logger = args.quiet ? quietLogger : consoleLogger;
+const container = {
+	logger
+}
+
 const app = express();
 
 getValueIfDefined = (endpoint, key) => endpoint[key] ? endpoint[key].value : null
@@ -37,30 +46,33 @@ const PORT = (args.port ? args.port.value :  process.env.PORT) || 8080;
 const GUID = uuid();
 let endpointCount = 0;
 let requestCount = 0;
+
 methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
 			const url = endpoint.value;
 			endpointCount++;
 			endpoint.endpointCount = endpointCount;
-			console.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
+			logger.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
 
-			const cpuHogCommand = createCpuHogCommand(endpoint);
-			const setStatusCodeCommand = createSetStatusCodeCommand(endpoint);
-			const setHeadersCommand = createSetHeadersCommand(endpoint);
-			const echoCommand = createEchoCommand(endpoint);
-			const responseCommand = createResponseCommand(endpoint);
-			const fileResponseCommand = createFileResponseCommand(endpoint);
-			const guidCommand = createGuidCommand(endpoint);
-			const proxyCommand = createProxyCommand(endpoint);
+			const cpuHogCommand = createCpuHogCommand(endpoint, container);
+			const setStatusCodeCommand = createSetStatusCodeCommand(endpoint, container);
+			const setHeadersCommand = createSetHeadersCommand(endpoint, container);
+			const echoCommand = createEchoCommand(endpoint, container);
+			const responseCommand = createResponseCommand(endpoint, container);
+			const infoResponseCommand = createInfoResponseCommand(endpoint, container);
+			const fileResponseCommand = createFileResponseCommand(endpoint, container);
+			const guidCommand = createGuidCommand(endpoint, container);
+			const proxyCommand = createProxyCommand(endpoint, container);
 			
-			const requestReceivedOutput = createRequestReceivedOutput(endpoint);
-			const dataReceivedOutput = createDataReceivedOutput(endpoint);
+			const requestReceivedOutput = createRequestReceivedOutput(endpoint, container);
+			const dataReceivedOutput = createDataReceivedOutput(endpoint, container);
 
 			app[method](url, (req, res) => {
 				requestCount++;
 				const request = {
 					requestCount,
+					endpoint,
 					method: req.method,
 					remoteAddress: req.connection.remoteAddress,
 					headers: req.headers,
@@ -83,6 +95,7 @@ methods.forEach((method) => {
 					await setStatusCodeCommand(request, res);
 					await setHeadersCommand(request, res);
 					await echoCommand(request, res);
+					await infoResponseCommand(request, res);
 					await responseCommand(request, res);
 					await fileResponseCommand(request, res);
 					await guidCommand(request, res);
@@ -95,7 +108,7 @@ methods.forEach((method) => {
 });
 
 app.all("*", (req, res) => {
-	console.warn(`#${requestCount++} ${req.method.toUpperCase()} ${req.path}: NOT FOUND`);
+	logger.warn(`#${requestCount++} ${req.method.toUpperCase()} ${req.path}: NOT FOUND`);
 	res.statusCode = 404;
 	res.end("Not found (Endpoint not matched in Bounce)");
 });
@@ -109,8 +122,8 @@ if (endpointCount > 0) {
 		https.createServer({
 			key: keyCertificate,
 			cert: httpsCertificate
-		}, app).listen(PORT, () => console.log(`Listening on port ${PORT} with https`));
+		}, app).listen(PORT, () => logger.log(`Listening on port ${PORT} with https`));
 	} else {
-		app.listen(PORT, () => console.log(`Listening on port ${PORT} with http`));
+		app.listen(PORT, () => logger.log(`Listening on port ${PORT} with http`));
 	}
 }

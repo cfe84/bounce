@@ -5,6 +5,7 @@ const proxy = (params, req, res) => {
     let proxyPath = params.proxyPath;
     let certFile = params.certFile;
     let keyFile = params.keyFile;
+    const logger = params.container.logger;
     const cert = params.cert || (certFile ? fs.readFileSync(certFile) : null);
     const key = params.key || (keyFile ? fs.readFileSync(keyFile) : null);
 
@@ -21,7 +22,7 @@ const proxy = (params, req, res) => {
             `${proxyTo.path}${req.url}`
             : req.url
         : proxyTo.path;
-    console.log(`Proxying to ${req.method} ${protocol}://${proxyTo.hostname}:${port}${path}`);
+    logger.log(`Proxying to ${req.method} ${protocol}://${proxyTo.hostname}:${port}${path}`);
 
     req.headers.host = `${proxyTo.hostname}:${port}`
 
@@ -36,8 +37,8 @@ const proxy = (params, req, res) => {
             cert
         }, (resp) => {
             let data = "";
-            console.log(`Response Status Code: ${resp.statusCode}`);
-            console.log(`    Response Headers: ${JSON.stringify(req.headers, null, 2)}`);
+            logger.log(`Response Status Code: ${resp.statusCode}`);
+            logger.log(`    Response Headers: ${JSON.stringify(req.headers, null, 2)}`);
             res.statusCode = resp.statusCode;
             res.set(resp.headers);
             resp.on("data", (chunk) => {
@@ -45,11 +46,7 @@ const proxy = (params, req, res) => {
                 res.write(chunk);
             });
             resp.on("end", () => {
-                if (data.length < 5096) {
-                    console.log(`   Response Body: ${data}`);
-                } else {
-                    console.log(`   Response Body: ${data.substr(0, 5096)}[...] (Truncated)`);
-                }
+                logger.log(`   Response Body: ${data}`);
                 resolve();
             });
         });
@@ -57,7 +54,7 @@ const proxy = (params, req, res) => {
             passThru.write(req.data);
         }
         passThru.on("error", (err) => {
-            console.error(`Error while proxying: ${err}`);
+            logger.error(`Error while proxying: ${err}`);
             reject(err);
         });
         passThru.end();

@@ -1,4 +1,4 @@
-const createEchoCommand = (endpoint) => {
+const createEchoCommand = (endpoint, container) => {
     const echo = !!endpoint.echo;
     if (echo) {
         return (request, response) => new Promise((resolve) => {

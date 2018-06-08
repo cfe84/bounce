@@ -1,4 +1,4 @@
-const createGuidCommand = (endpoint) => {
+const createGuidCommand = (endpoint, container) => {
     const guid = !!endpoint.guid;
     if (guid) {
         return (request, response) => new Promise((resolve) => {

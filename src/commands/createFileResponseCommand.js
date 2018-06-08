@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const createFileResponseCommand = (endpoint) => {
+const createFileResponseCommand = (endpoint, container) => {
     const fileName = endpoint.file ? endpoint.file.value : null;
     let file = null;
     if (fileName) {

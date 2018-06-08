@@ -133,34 +133,38 @@ Available commands are the following: (check `bounce --help` to get the latest)
   -p, --post /relative/url/:optional_parameter/     create a POST endpoint
   -d, --delete /relative/url/:optional_parameter/   create a DELETE endpoint
   -a, --all /relative/url/:optional_parameter/      create an endpoint matchin all methods
-  -P, --port port number                            port to listen to. Defaults to environment variable PORT, then
-                                                    8080
+  -P, --port port number                            port to listen to. Defaults to environment variable PORT, then 8080
   -h, --help                                        display this message
+  -q, --quiet                                       do not output to console
+  -S, --https                                       setup the server as https
+  --https-certfile filepath                         Client certificate for https endpoint
+  --https-keyfile filepath                          Secret client key for https endpoint
+  --https-cert certificate content                  Client certificate for https endpoint
+  --https-key key contnet                           Secret client key for https endpoint
 ```
 
 In addition, the following sub-commands can be used to configure endpoints:
 
 ```
   -e, --echo                                        reply with request body
-  -G, --guid                                        when the node application is starting, a GUID is generated.
-                                                    This replies with this GUID. Particularly useful to test load balancing and server stickiness
+  -i, --info                                        reply with information about the call (headers, query, ...)
+  -G, --guid                                        when the node application is starting, a GUID is generated. This replies with
+                                                    this GUID. Particularly useful to test load balancing and server stickiness
   -r, --response response body                      specify response to be sent
   -f, --file response file                          use a file containing the response
   -H, --header 'header: head'                       specify header to be replied. Can have multiple
   -s, --status http status                          specify status for response. Defaults to 200
-  -x, --proxy-to https://www.google.com             Proxy request to another server. Response headers and status
-                                                    code are returned. The 'host' header will be replaced to match
-                                                    the destination server.
-  --proxy-path                                      Proxy request path to the proxied as 
-                                                    well. This is
-                                                    especially useful if you catch all request to the proxy. (e.g.
-                                                    --get '*' --proxy-to https://www.google.com --proxy-path). Path
-                                                    is appended to any path defined it the proxy-to sub-command,
-                                                    so don't use trailing slashes in the proxy path
+  --cpu time in seconds                             uses 100% of one CPU for seconds.
+  -x, --proxy-to https://www.google.com             Proxy request to another server. Response headers and status code are
+                                                    returned. The 'host' header will be replaced to match the destination server.
+  --proxy-path                                      Proxy request path to the proxied server as well. This is especially useful
+                                                    if you catch all request to the proxy. (e.g. --get '*' --proxy-to
+                                                    https://www.google.com --proxy-path). Path is appended to any path defined it
+                                                    the proxy-to sub-command, so don't use trailing slashes in the proxy path
   --proxy-certfile filepath                         Client certificate to authenticate requests to proxy
   --proxy-keyfile filepath                          Secret client key to authenticate requests
   --proxy-cert certificate content                  Client certificate to authenticate requests to proxy
-  --proxy-key keyfile content                       Secret client key to authenticate requests                                                    
+  --proxy-key keyfile content                       Secret client key to authenticate requests                                              
 ```
 
 Sub-commands are applied only to the commands that is before them. For example:

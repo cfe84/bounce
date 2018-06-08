@@ -1,8 +1,11 @@
-const createDataReceivedOutput = (endpoint) => {
-    
+const createDataReceivedOutput = (endpoint, container) => {
+    const output = !endpoint.silent;
+    const logger = container.logger;
     return (request, response) => {
-        console.log(`Body: ${request.data}`);
-        console.log(`\n\n------------------------------`);
+        if (output) {
+            logger.log(`Body: ${request.data}`);
+            logger.log(`\n\n------------------------------`);
+        }
     }
 }
 

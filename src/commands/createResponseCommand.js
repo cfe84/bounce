@@ -1,4 +1,4 @@
-const createResponseCommand = (endpoint) => {
+const createResponseCommand = (endpoint, container) => {
     const responseToSend = endpoint.response ? endpoint.response.value : null;
     if (responseToSend) {
         return (request, response) => new Promise((resolve) => {

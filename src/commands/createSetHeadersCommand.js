@@ -1,4 +1,4 @@
-const createSetHeadersCommand = (endpoint) => {
+const createSetHeadersCommand = (endpoint, container) => {
     const makeHeaders = (headerList) => {
         const headers = {};
         if (headerList) {
