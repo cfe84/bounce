@@ -2,7 +2,7 @@ const createInfoResponseCommand = (endpoint, container) => {
     const info = !!endpoint.info;
     if (info) {
         return (request, response) => new Promise((resolve) => {
-            response.write(JSON.stringify(request));
+            response.json(request);
             resolve();
         });
     }

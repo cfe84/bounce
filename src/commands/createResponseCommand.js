@@ -1,7 +1,7 @@
 const createResponse = (responseTemplate, parameters) => {
     let responseToSend = responseTemplate;
     for (var property in parameters) {
-        if (parameters.hasOwnProperty(property)) {
+        if (parameters.hasOwnProperty(property) && property !== "0") {
             const value = parameters[property];
             responseToSend = responseToSend.replace(new RegExp(`{${property}}`, 'g'), value);
         }
