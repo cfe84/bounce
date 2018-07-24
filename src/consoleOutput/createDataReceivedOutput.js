@@ -6,6 +6,7 @@ const createDataReceivedOutput = (endpoint, container) => {
             logger.log(`Body: ${request.data}`);
             logger.log(`\n\n------------------------------`);
         }
+        return Promise.resolve();
     }
 }
 

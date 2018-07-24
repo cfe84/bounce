@@ -88,19 +88,19 @@ methods.forEach((method) => {
 				let data = "";
 
 				req.on("data", (chunk) => data += chunk);
-				req.on("end", async () => {
+				req.on("end", () => {
 					request.data = data;
-					dataReceivedOutput(request, res);
-					await cpuHogCommand(request, res);
-					await setStatusCodeCommand(request, res);
-					await setHeadersCommand(request, res);
-					await echoCommand(request, res);
-					await infoResponseCommand(request, res);
-					await responseCommand(request, res);
-					await fileResponseCommand(request, res);
-					await guidCommand(request, res);
-					await proxyCommand(request, res);
-					res.end();
+					dataReceivedOutput(request, res)
+						.then(() => cpuHogCommand(request, res))
+						.then(() => setStatusCodeCommand(request, res))
+						.then(() => setHeadersCommand(request, res))
+						.then(() => echoCommand(request, res))
+						.then(() => infoResponseCommand(request, res))
+						.then(() => responseCommand(request, res))
+						.then(() => fileResponseCommand(request, res))
+						.then(() => guidCommand(request, res))
+						.then(() => proxyCommand(request, res))
+						.then(() => res.end());
 				});
 			});
 		})		
