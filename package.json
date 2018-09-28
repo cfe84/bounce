@@ -1,6 +1,6 @@
 {
   "name": "bounce-server",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "description": "A code-less HTTP server setup in seconds",
   "main": "server.js",
   "keywords": [
@@ -37,7 +37,7 @@
     "mocha": "^5.1.1",
     "should": "^13.2.1"
   },
-  "engines" : { 
-    "node" : ">=8.0.0"
+  "engines": {
+    "node": ">=8.0.0"
   }
 }
