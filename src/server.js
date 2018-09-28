@@ -75,6 +75,7 @@ methods.forEach((method) => {
 				const request = {
 					requestCount,
 					endpoint,
+					receivedDate: new Date(),
 					method: req.method,
 					remoteAddress: req.connection.remoteAddress,
 					headers: req.headers,
@@ -98,11 +99,11 @@ methods.forEach((method) => {
 						.then(() => setHeadersCommand(request, res))
 						.then(() => echoCommand(request, res))
 						.then(() => envDumpCommand(request, res))
-						.then(() => infoResponseCommand(request, res))
 						.then(() => responseCommand(request, res))
 						.then(() => fileResponseCommand(request, res))
 						.then(() => guidCommand(request, res))
 						.then(() => proxyCommand(request, res))
+						.then(() => infoResponseCommand(request, res))
 						.then(() => res.end());
 				});
 			});

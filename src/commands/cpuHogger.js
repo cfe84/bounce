@@ -1,6 +1,6 @@
-const hogCpu = (timeoutInSeconds) => {
+const hogCpu = (timeoutInMilliseconds) => {
     const start = (new Date()).getTime();
-    const finish = start + timeoutInSeconds * 1000;
+    const finish = start + timeoutInMilliseconds;
     while((new Date).getTime() < finish) {
         const sqrt = Math.sqrt(14212384928510395429571);
     }
