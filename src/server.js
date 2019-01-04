@@ -16,6 +16,7 @@ const createSetStatusCodeCommand = require("./commands/createSetStatusCodeComman
 const createSetHeadersCommand = require("./commands/createSetHeadersCommand");
 const createGuidCommand = require("./commands/createGuidCommand");
 const createProxyCommand = require("./commands/createProxyCommand");
+const createFolderResponseCommand = require("./commands/createFolderResponseCommand");
 
 const createRequestReceivedOutput = require("./consoleOutput/createRequestReceivedOutput");
 const createDataReceivedOutput = require("./consoleOutput/createDataReceivedOutput");
@@ -52,6 +53,7 @@ methods.forEach((method) => {
 	if (args[method]) {
 		args[method].forEach((endpoint) => {
 			const url = endpoint.value;
+			endpoint.method = method;
 			endpointCount++;
 			endpoint.endpointCount = endpointCount;
 			logger.log(`Create endpoint #${endpointCount}: ${method.toUpperCase()} ${url}`);
@@ -63,6 +65,7 @@ methods.forEach((method) => {
 			const responseCommand = createResponseCommand(endpoint, container);
 			const infoResponseCommand = createInfoResponseCommand(endpoint, container);
 			const fileResponseCommand = createFileResponseCommand(endpoint, container);
+			const folderResponseCommand = createFolderResponseCommand(endpoint, container);
 			const guidCommand = createGuidCommand(endpoint, container);
 			const proxyCommand = createProxyCommand(endpoint, container);
 			const envDumpCommand = createEnvDumpCommand(endpoint, container);
@@ -101,6 +104,7 @@ methods.forEach((method) => {
 						.then(() => envDumpCommand(request, res))
 						.then(() => responseCommand(request, res))
 						.then(() => fileResponseCommand(request, res))
+						.then(() => folderResponseCommand(request, res))
 						.then(() => guidCommand(request, res))
 						.then(() => proxyCommand(request, res))
 						.then(() => infoResponseCommand(request, res))
