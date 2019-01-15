@@ -9,11 +9,12 @@ const createFileResponseCommand = (endpoint, container) => {
     if (folderName) {
         return (request, response) => new Promise((resolve) => {
             let fileName = request.url;
+            fileName = decodeURI(fileName);
             while (fileName[0] === "/") {
                 fileName = fileName.substring(1);
             }
-            if (!fileName) {
-                fileName = "index.html";
+            if (!fileName || fileName[fileName.length - 1] === "/") {
+                fileName += "index.html";
             }
             const filePath = path.resolve(folderName, fileName);
             if (fs.existsSync(filePath)) {
