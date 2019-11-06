@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: bounce
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: bounce
+    spec:
+      containers:
+      - name: bounce-container
+        image: cfe84/bounce:latest
+        ports:
+        - containerPort: {{ .Values.port }}
+        env:
+        - name: BOUNCE_COMMAND
+          value: {{ .Values.command }}
+        - name: PORT
+          value: "{{ .Values.port }}"

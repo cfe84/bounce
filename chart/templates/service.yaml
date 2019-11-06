@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: bounce-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: bounce
+  ports:
+  - protocol: TCP
+    port: {{ .Values.port }}
+  type: LoadBalancer

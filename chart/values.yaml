@@ -1,0 +1,4 @@
+command: "-a '*' -r 'Hello!'"
+namespace: bounce
+port: 8080
+replicas: 2
