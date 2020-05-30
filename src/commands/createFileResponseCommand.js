@@ -2,12 +2,9 @@ const fs = require("fs");
 
 const createFileResponseCommand = (endpoint, container) => {
     const fileName = endpoint.file ? endpoint.file.value : null;
-    let file = null;
     if (fileName) {
-        file = fs.readFileSync(fileName);
-    }
-    if (file) {
         return (request, response) => new Promise((resolve) => {
+            const file = fs.readFileSync(fileName);
             response.write(file);
             resolve();
         });
