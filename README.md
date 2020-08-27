@@ -9,7 +9,7 @@ in CLI, Node, Docker or Kubernetes out of the box_
 
 ```
 
-![](https://chfeval.blob.core.windows.net/share/picture/bounce-example.gif?st=2018-06-08T21%3A38%3A19Z&se=2021-06-09T21%3A38%3A00Z&sp=rl&sv=2017-07-29&sr=b&sig=9h%2B3xjZn4w1rNJRIUstxhup4yZl%2FnBBeh8Db64mExVo%3D)
+![GIF demo of Bounce](https://chfeval.blob.core.windows.net/share/picture/bounce-example.gif?st=2018-06-08T21%3A38%3A19Z&se=2021-06-09T21%3A38%3A00Z&sp=rl&sv=2017-07-29&sr=b&sig=9h%2B3xjZn4w1rNJRIUstxhup4yZl%2FnBBeh8Db64mExVo%3D)
 
 Picture it: you're running through the forest with zombie
 donkeys right behind you. They've been hunting you the whole
@@ -51,7 +51,7 @@ npm install -g bounce-server
 ```
 2. Run using command `bounce`
 
-![](https://chfeval.blob.core.windows.net/share/picture/bounce.gif?st=2018-05-31T23%3A15%3A43Z&se=2024-06-01T23%3A15%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=4dLyKApD2pr2tjOqMU1by77WjoL3p7jb2w%2FdFFgaxro%3D)
+![Another beautiful gif](https://chfeval.blob.core.windows.net/share/picture/bounce.gif?st=2018-05-31T23%3A15%3A43Z&se=2024-06-01T23%3A15%3A00Z&sp=rl&sv=2017-04-17&sr=b&sig=4dLyKApD2pr2tjOqMU1by77WjoL3p7jb2w%2FdFFgaxro%3D)
 
 This example creates two endpoints, a GET which does nothing, and a POST which responds
 with what it receives.
@@ -126,6 +126,8 @@ command you want to run: `kubectl create secret generic bounce-command --from-li
 2. `kubectl apply -f deploy.yaml` asks for a Load Balancer and exposes bounce on port 8080.
 
 ## Parameters
+
+Launching Bounce with no parameters (`bounce`) is the same as launching it with `bounce -a '*' -F .`, which serves files in the current folder for all requests. Any command supersedes that.
 
 Available commands are the following: (check `bounce --help` to get the latest)
 

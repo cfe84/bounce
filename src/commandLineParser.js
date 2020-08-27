@@ -26,7 +26,7 @@ const parser = (commands) => {
             const nextCommandIsCommand = !!isCommand(nextCommand) && !!findCommand(command.subcommands, nextCommand.substring(2));
             return nextCommandIsAlias || nextCommandIsCommand;
         }
-        while(commandLine.length > 0 && 
+        while (commandLine.length > 0 &&
             command.subcommands &&
             nextCommandIsSubcommand()) {
             parseCommand(command.subcommands, parsedCommand, commandLine);
@@ -75,11 +75,25 @@ const parser = (commands) => {
         processCommand(res, commandLine, command);
     }
 
+    const defaultCommand = () => ({
+        all: [
+            {
+                value: "*",
+                folder: {
+                    value: "."
+                }
+            }
+        ]
+    })
+
     const parseCommandLine = (commandLine) => {
         const commandLineCopy = commandLine.slice();
+        if (commandLineCopy.length === 0) {
+            return defaultCommand()
+        }
         const res = {};
-        while(commandLineCopy.length > 0) {
-            parseCommand(commands, res, commandLineCopy);    
+        while (commandLineCopy.length > 0) {
+            parseCommand(commands, res, commandLineCopy);
         }
         return res;
     }

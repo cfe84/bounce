@@ -2,15 +2,15 @@ const should = require("should");
 const Parser = require("../src/commandLineParser");
 
 const subcommands = [
-	{ name: 'response', alias: "r", type: String},
-	{ name: 'header', alias: "H", type: String, multiple: true},
+    { name: 'response', alias: "r", type: String },
+    { name: 'header', alias: "H", type: String, multiple: true },
 ];
 
 const mainCommands = [
-    { name: 'get', alias: "g", type: String, multiple: true, subcommands},
-	{ name: 'port', alias: "P", type: Number},
-	{ name: 'pizza', description: "Not having an alias shouldn't be an issue.", type: Number},
-	{ name: 'help', alias: "h", type: Boolean},
+    { name: 'get', alias: "g", type: String, multiple: true, subcommands },
+    { name: 'port', alias: "P", type: Number },
+    { name: 'pizza', description: "Not having an alias shouldn't be an issue.", type: Number },
+    { name: 'help', alias: "h", type: Boolean },
 ];
 
 const createParser = () => Parser(mainCommands);
@@ -32,12 +32,19 @@ describe("Command line parser", () => {
         should(res.get[0].value).be.equal("/something");
         should(res.get[1].value).be.equal("/something else");
     });
-    it("should parse help" , () => {
+    it("should parse help", () => {
         const res = commandLineParser(["-g", "/something", "--help"]);
         should(res.help).not.be.undefined();
         should(res.help.value).be.true();
     });
-    it("should parse subcommands" , () => {
+    it("should process empty command line", () => {
+        const res = commandLineParser([]);
+        should(res.all).not.be.undefined();
+        should(res.all).have.length(1);
+        should(res.all[0].value).be.equal("*");
+        should(res.all[0].folder.value).be.equal(".");
+    });
+    it("should parse subcommands", () => {
         const res = commandLineParser(["-g", "/something", "--response", "bla", "--get", "YOUHOU"]);
         should(res.get).not.be.undefined();
         should(res.get).have.length(2);
@@ -52,7 +59,7 @@ describe("Command line parser", () => {
         should(res).deepEqual({
             get: [{
                 value: "/something",
-                header: [ { value: "yo" }, { value: "hey" }],
+                header: [{ value: "yo" }, { value: "hey" }],
                 response: { value: "bla" }
             }, {
                 value: "YOUHOU"
