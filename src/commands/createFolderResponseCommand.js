@@ -1,4 +1,5 @@
 const fs = require("fs");
+const mime = require("mime-types");
 const path = require("path");
 
 const createFileResponseCommand = (endpoint, container) => {
@@ -18,6 +19,8 @@ const createFileResponseCommand = (endpoint, container) => {
             }
             const filePath = path.resolve(folderName, fileName);
             if (fs.existsSync(filePath)) {
+                const mimeType = mime.lookup(filePath);
+                response.setHeader("content-type", mimeType);
                 const file = fs.readFileSync(filePath);
                 response.write(file);
             } else {
