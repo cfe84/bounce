@@ -212,3 +212,10 @@ variable called `BOUNCE_COMMAND` and set it to the command to run BOUNCE (e.g. `
 start bounce without parameters (`bounce` or `node server.js`).
 
 When the `BOUNCE_COMMAND` variable is defined, bounce is ignoring the command line.
+
+
+# Changelog
+
+## 2.20
+
+Return mimetype for all files
