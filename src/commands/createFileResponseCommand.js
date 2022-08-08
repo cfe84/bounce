@@ -5,7 +5,7 @@ const createFileResponseCommand = (endpoint, container) => {
     const fileName = endpoint.file ? endpoint.file.value : null;
     if (fileName) {
         return (request, response) => new Promise((resolve) => {
-            const mimeType = mime.lookup(file);
+            const mimeType = mime.lookup(fileName);
             response.setHeader("content-type", mimeType);
             const file = fs.readFileSync(fileName);
             response.write(file);
